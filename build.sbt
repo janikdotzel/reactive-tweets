@@ -5,11 +5,14 @@ ThisBuild / version          := "0.1.0-SNAPSHOT"
 ThisBuild / organization     := "com.example"
 ThisBuild / organizationName := "example"
 
+val AkkaVersion = "2.6.19"
+libraryDependencies ++= Seq(
+  "com.typesafe.akka" %% "akka-stream" % AkkaVersion,
+  "com.typesafe.akka" %% "akka-stream-testkit" % AkkaVersion % Test
+)
+
 lazy val root = (project in file("."))
   .settings(
     name := "reactive-tweets",
     libraryDependencies += scalaTest % Test
   )
-
-val AkkaVersion = "2.6.19"
-libraryDependencies += "com.typesafe.akka" %% "akka-stream" % AkkaVersion

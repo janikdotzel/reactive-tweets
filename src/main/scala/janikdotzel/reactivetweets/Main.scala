@@ -1,5 +1,7 @@
 package janikdotzel.reactivetweets
 
-object Main {
+object Main extends App {
+
+  ReactiveTweets
 
 }
