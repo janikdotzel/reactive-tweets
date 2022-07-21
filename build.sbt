@@ -11,4 +11,5 @@ lazy val root = (project in file("."))
     libraryDependencies += scalaTest % Test
   )
 
-// See https://www.scala-sbt.org/1.x/docs/Using-Sonatype.html for instructions on how to publish to Sonatype.
+val AkkaVersion = "2.6.19"
+libraryDependencies += "com.typesafe.akka" %% "akka-stream" % AkkaVersion
