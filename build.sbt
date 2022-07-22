@@ -8,6 +8,7 @@ ThisBuild / organizationName := "example"
 val AkkaVersion = "2.6.19"
 libraryDependencies ++= Seq(
   "com.typesafe.akka" %% "akka-stream" % AkkaVersion,
+  "com.lightbend.akka" %% "akka-stream-alpakka-json-streaming" % "3.0.4",
   "com.typesafe.akka" %% "akka-stream-testkit" % AkkaVersion % Test
 )
 
