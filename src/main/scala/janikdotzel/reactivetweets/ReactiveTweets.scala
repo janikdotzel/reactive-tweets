@@ -1,13 +1,13 @@
 package janikdotzel.reactivetweets
 
-import akka.{Done, NotUsed}
-import akka.actor.ActorSystem
 import akka.stream.scaladsl.{Flow, Sink, Source}
+import akka.{Done, NotUsed}
 
 import scala.concurrent.Future
 
 object ReactiveTweets {
 
+  // Model
   final case class Author(handle: String)
   final case class Hashtag(name: String)
   final case class Tweet(author: Author, timestamp: Long, body: String) {
@@ -21,6 +21,8 @@ object ReactiveTweets {
   }
 
   val akkaTag = Hashtag("#akka")
+
+  // Sources
   val tweets: Source[Tweet, NotUsed] = Source(
     Tweet(Author("rolandkuhn"), System.currentTimeMillis, "#akka rocks!") ::
       Tweet(Author("patriknw"), System.currentTimeMillis, "#akka !") ::
@@ -33,12 +35,18 @@ object ReactiveTweets {
       Tweet(Author("appleman"), System.currentTimeMillis, "#apples rock!") ::
       Tweet(Author("drama"), System.currentTimeMillis, "we compared #apples to #oranges!") ::
       Nil)
-  val authors: Flow[Tweet,Author,NotUsed] =
+
+  val authors: Source[Author, NotUsed] =
+    tweets.map(_.author)
+
+  // Flows
+  val getAuthors: Flow[Tweet,Author,NotUsed] =
     Flow[Tweet].filter(_.hashtags.contains(akkaTag)).map(_.author)
+
+  val getBody: Flow[Tweet, String, NotUsed] =
+    Flow[Tweet].map( tweet => tweet.body)
+
+
+  //Sink
   val printer: Sink[Any, Future[Done]] = Sink.foreach(println)
-
-  implicit val system: ActorSystem = ActorSystem("reactive-tweets")
-
-  tweets.via(authors).runWith(printer)
-
 }
