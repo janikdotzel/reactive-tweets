@@ -1,6 +1,6 @@
 package janikdotzel.reactivetweets
 
-import akka.stream.scaladsl.{Flow, Sink, Source}
+import akka.stream.scaladsl.{Sink, Source}
 import akka.{Done, NotUsed}
 
 import scala.concurrent.Future
@@ -9,7 +9,9 @@ object ReactiveTweets {
 
   // Model
   final case class Author(handle: String)
+
   final case class Hashtag(name: String)
+
   final case class Tweet(author: Author, timestamp: Long, body: String) {
     def hashtags: Set[Hashtag] =
       body
@@ -22,7 +24,7 @@ object ReactiveTweets {
 
   val akkaTag = Hashtag("#akka")
 
-  // Sources
+  // Version 1
   val tweets: Source[Tweet, NotUsed] = Source(
     Tweet(Author("rolandkuhn"), System.currentTimeMillis, "#akka rocks!") ::
       Tweet(Author("patriknw"), System.currentTimeMillis, "#akka !") ::
@@ -36,19 +38,39 @@ object ReactiveTweets {
       Tweet(Author("drama"), System.currentTimeMillis, "we compared #apples to #oranges!") ::
       Nil)
 
-  val authors: Source[Author, NotUsed] =
-    tweets.map(_.author)
+  //  val authors: Source[Author, NotUsed] =
+  //    tweets.map(_.author)
 
+  //  val getAuthors: Flow[Tweet,Author,NotUsed] =
+  //    Flow[Tweet].filter(_.hashtags.contains(akkaTag)).map(_.author)
 
+  //  val getBody: Flow[Tweet, String, NotUsed] =
+  //    Flow[Tweet].map( tweet => tweet.body)
 
-  // Flows
-  val getAuthors: Flow[Tweet,Author,NotUsed] =
-    Flow[Tweet].filter(_.hashtags.contains(akkaTag)).map(_.author)
-
-  val getBody: Flow[Tweet, String, NotUsed] =
-    Flow[Tweet].map( tweet => tweet.body)
-
-
-  //Sink
   val printer: Sink[Any, Future[Done]] = Sink.foreach(println)
+
+
+
+  // Version 2: Json Source
+//  val tweetCountAkka: Source[ByteString, NotUsed] = {
+//    val json = scala.io.Source.fromResource("akka-tweet-count.json").mkString
+//    Source.single(ByteString(json))
+//  }
+//
+//  val tweetCountScala: Source[ByteString, NotUsed] = {
+//    val json = scala.io.Source.fromResource("scala-tweet-count.json").mkString
+//    Source.single(ByteString(json))
+//  }
+//
+//  val readJson: Flow[ByteString, String, NotUsed] =
+//    JsonReader.select("$.data[*].tweet_count")
+//      .map(byteString => byteString.utf8String)
+//
+//  val seq: Sink[Nothing, Future[Seq[Nothing]]] = Sink.seq
+
+
+
+
+  // Version 3: API Source
+
 }
