@@ -11,9 +11,9 @@ In order to experiment with Akka Streams on your own you can simply clone this p
 
 ### Navigation:
 These files are the ones you should work with
-- [Stream Components:](janikdotze/reactive-tweets/src/main/scala/janikdotzel/reactivetweets/StreamComponents.scala) 
+- [Stream Components:](janikdotzel/reactive-tweets/src/main/scala/janikdotzel/reactivetweets/StreamComponents.scala) 
 Building blocks for your Stream. Modify the existing ones or create your own.
-- [Main:](Main.scala) 
+- [Main:](src/main/scala/janikdotzel/reactivetweets/Main.scala) 
 Creation of runnable graphs
 
 bearer token needed for pulling twitter data 
