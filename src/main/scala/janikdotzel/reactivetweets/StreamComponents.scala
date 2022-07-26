@@ -12,9 +12,7 @@ trait StreamComponents {
 
   // Model
   final case class Author(handle: String)
-
   final case class Hashtag(name: String)
-
   final case class Tweet(author: Author, timestamp: Long, body: String) {
     def hashtags: Set[Hashtag] =
       body
@@ -27,7 +25,7 @@ trait StreamComponents {
 
   val akkaTag: Hashtag = Hashtag("#akka")
 
-  // Version 1
+  // Tag: print-akka-tweets
   val tweets: Source[Tweet, NotUsed] = Source(
     Tweet(Author("rolandkuhn"), System.currentTimeMillis, "#akka rocks!") ::
       Tweet(Author("patriknw"), System.currentTimeMillis, "#akka !") ::
@@ -51,10 +49,11 @@ trait StreamComponents {
       Flow[Tweet].map( tweet => tweet.body)
 
   val printer: Sink[Any, Future[Done]] = Sink.foreach(println)
+  // Tag: print-akka-tweets
 
 
 
-  // Version 2: Json as a Source
+  // Tag: json-source
     val tweetCountAkka: Source[ByteString, NotUsed] = {
       val json = scala.io.Source.fromResource("akka-tweet-count.json").mkString
       Source.single(ByteString(json))
@@ -70,9 +69,11 @@ trait StreamComponents {
         .map(byteString => byteString.utf8String)
 
     val seq: Sink[Nothing, Future[Seq[Nothing]]] = Sink.seq
+  // Tag: json-source
 
 
-  // Version 3: REST/Streaming API as a Source
+
+  // Tag: print-real-scala-tweets
   val akkaQuery = "akka"
   val scalaQuery = "scala"
   val query = "akka%20scala%20lightbend"
@@ -87,4 +88,7 @@ trait StreamComponents {
     Sink.foreach{ tweets =>
       tweets.zipWithIndex.foreach{ case (element, index) => println(s"Message $index: $element") }
     }
+  // Tag: print-real-scala-tweets
+
+
 }
