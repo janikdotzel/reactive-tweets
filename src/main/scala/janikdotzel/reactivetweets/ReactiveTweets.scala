@@ -1,9 +1,12 @@
 package janikdotzel.reactivetweets
 
-import akka.stream.scaladsl.{Sink, Source}
+import akka.stream.scaladsl.{Flow, Sink, Source}
 import akka.{Done, NotUsed}
+import janikdotzel.reactivetweets.twitter.JsonFormats._
+import janikdotzel.reactivetweets.twitter.TwitterAPI._
 
 import scala.concurrent.Future
+import scala.concurrent.duration.DurationInt
 
 object ReactiveTweets {
 
@@ -51,26 +54,37 @@ object ReactiveTweets {
 
 
 
-  // Version 2: Json Source
-//  val tweetCountAkka: Source[ByteString, NotUsed] = {
-//    val json = scala.io.Source.fromResource("akka-tweet-count.json").mkString
-//    Source.single(ByteString(json))
-//  }
-//
-//  val tweetCountScala: Source[ByteString, NotUsed] = {
-//    val json = scala.io.Source.fromResource("scala-tweet-count.json").mkString
-//    Source.single(ByteString(json))
-//  }
-//
-//  val readJson: Flow[ByteString, String, NotUsed] =
-//    JsonReader.select("$.data[*].tweet_count")
-//      .map(byteString => byteString.utf8String)
-//
-//  val seq: Sink[Nothing, Future[Seq[Nothing]]] = Sink.seq
+  // Version 2: Json as a Source
+  //  val tweetCountAkka: Source[ByteString, NotUsed] = {
+  //    val json = scala.io.Source.fromResource("akka-tweet-count.json").mkString
+  //    Source.single(ByteString(json))
+  //  }
+  //
+  //  val tweetCountScala: Source[ByteString, NotUsed] = {
+  //    val json = scala.io.Source.fromResource("scala-tweet-count.json").mkString
+  //    Source.single(ByteString(json))
+  //  }
+  //
+  //  val readJson: Flow[ByteString, String, NotUsed] =
+  //    JsonReader.select("$.data[*].tweet_count")
+  //      .map(byteString => byteString.utf8String)
+  //
+  //  val seq: Sink[Nothing, Future[Seq[Nothing]]] = Sink.seq
 
 
+  // Version 3: REST/Streaming API as a Source
+  val akkaQuery = "akka"
+  val scalaQuery = "scala"
+  val query = "akka%20scala%20lightbend"
 
+  val recentTweets: Source[List[String], NotUsed] =
+    Source.repeat(search("malediven"))
 
-  // Version 3: API Source
+  val rateLimit: Flow[List[String], List[String], NotUsed] =
+    Flow[List[String]].throttle(1, 10.second)
 
+  val tweetPrinter: Sink[List[String], Future[Done]] =
+    Sink.foreach{ tweets =>
+      tweets.zipWithIndex.foreach{ case (element, index) => println(s"Message $index: $element") }
+    }
 }
