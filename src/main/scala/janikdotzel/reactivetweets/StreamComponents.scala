@@ -1,14 +1,14 @@
 package janikdotzel.reactivetweets
 
+import akka.stream.alpakka.json.scaladsl.JsonReader
 import akka.stream.scaladsl.{Flow, Sink, Source}
+import akka.util.ByteString
 import akka.{Done, NotUsed}
-import janikdotzel.reactivetweets.twitter.JsonFormats._
 import janikdotzel.reactivetweets.twitter.TwitterAPI._
-
 import scala.concurrent.Future
 import scala.concurrent.duration.DurationInt
 
-object ReactiveTweets {
+trait StreamComponents {
 
   // Model
   final case class Author(handle: String)
@@ -25,7 +25,7 @@ object ReactiveTweets {
         .toSet
   }
 
-  val akkaTag = Hashtag("#akka")
+  val akkaTag: Hashtag = Hashtag("#akka")
 
   // Version 1
   val tweets: Source[Tweet, NotUsed] = Source(
@@ -41,35 +41,35 @@ object ReactiveTweets {
       Tweet(Author("drama"), System.currentTimeMillis, "we compared #apples to #oranges!") ::
       Nil)
 
-  //  val authors: Source[Author, NotUsed] =
-  //    tweets.map(_.author)
+    val authors: Source[Author, NotUsed] =
+      tweets.map(_.author)
 
-  //  val getAuthors: Flow[Tweet,Author,NotUsed] =
-  //    Flow[Tweet].filter(_.hashtags.contains(akkaTag)).map(_.author)
+    val getAuthors: Flow[Tweet,Author,NotUsed] =
+      Flow[Tweet].filter(_.hashtags.contains(akkaTag)).map(_.author)
 
-  //  val getBody: Flow[Tweet, String, NotUsed] =
-  //    Flow[Tweet].map( tweet => tweet.body)
+    val getBody: Flow[Tweet, String, NotUsed] =
+      Flow[Tweet].map( tweet => tweet.body)
 
   val printer: Sink[Any, Future[Done]] = Sink.foreach(println)
 
 
 
   // Version 2: Json as a Source
-  //  val tweetCountAkka: Source[ByteString, NotUsed] = {
-  //    val json = scala.io.Source.fromResource("akka-tweet-count.json").mkString
-  //    Source.single(ByteString(json))
-  //  }
-  //
-  //  val tweetCountScala: Source[ByteString, NotUsed] = {
-  //    val json = scala.io.Source.fromResource("scala-tweet-count.json").mkString
-  //    Source.single(ByteString(json))
-  //  }
-  //
-  //  val readJson: Flow[ByteString, String, NotUsed] =
-  //    JsonReader.select("$.data[*].tweet_count")
-  //      .map(byteString => byteString.utf8String)
-  //
-  //  val seq: Sink[Nothing, Future[Seq[Nothing]]] = Sink.seq
+    val tweetCountAkka: Source[ByteString, NotUsed] = {
+      val json = scala.io.Source.fromResource("akka-tweet-count.json").mkString
+      Source.single(ByteString(json))
+    }
+
+    val tweetCountScala: Source[ByteString, NotUsed] = {
+      val json = scala.io.Source.fromResource("scala-tweet-count.json").mkString
+      Source.single(ByteString(json))
+    }
+
+    val readJson: Flow[ByteString, String, NotUsed] =
+      JsonReader.select("$.data[*].tweet_count")
+        .map(byteString => byteString.utf8String)
+
+    val seq: Sink[Nothing, Future[Seq[Nothing]]] = Sink.seq
 
 
   // Version 3: REST/Streaming API as a Source

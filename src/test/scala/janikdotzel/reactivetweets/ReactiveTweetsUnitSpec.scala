@@ -3,7 +3,7 @@ package janikdotzel.reactivetweets
 import akka.actor.ActorSystem
 import akka.stream.scaladsl.Sink
 import akka.testkit.TestProbe
-import janikdotzel.reactivetweets.ReactiveTweets.{Author, getAuthors, tweets}
+import janikdotzel.reactivetweets.StreamComponents.{Author, getAuthors, tweets}
 import org.scalatest.flatspec.AnyFlatSpec
 
 import scala.concurrent.duration.DurationInt

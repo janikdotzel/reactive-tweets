@@ -13,7 +13,7 @@ import scala.concurrent.{Await, Future}
 
 object TwitterAPI {
 
-  val bearerToken = System.getenv("BEARER_TOKEN")
+  val bearerToken: String = System.getenv("BEARER_TOKEN")
   if (bearerToken.isEmpty) println("Bearer Token is missing.") else println("Bearer Token is set correctly.")
 
   def search(query: String): List[String] = {
@@ -23,8 +23,8 @@ object TwitterAPI {
       .singleRequest(HttpRequest(uri = uri)
         .withHeaders(Authorization(OAuth2BearerToken(bearerToken))))
 
-    val searchResponse: Future[SearchResponse] =
-      httpResponse.flatMap { res => Unmarshal(res).to[SearchResponse] }
+    val searchResponse: Future[SearchTweetsResponse] =
+      httpResponse.flatMap { res => Unmarshal(res).to[SearchTweetsResponse] }
 
     val searchResult = Await.result(searchResponse, 5.seconds)
 
