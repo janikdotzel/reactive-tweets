@@ -1,9 +1,21 @@
 # Reactive-Tweets
 
+## Table of Contents
+
+* [Introduction](#introduction)
+* [Getting Started](#getting-started)
+    * [Twitter API access](#twitter-api-access)
+* [Tasks](#tasks)
+    * [Print Tweets with the 'akka' hashtag](#print-tweets-with-the-akka-hashtag)
+    * [Use a Json File as a Source](#use-a-json-file-as-a-source)
+    * [Print tweets obtained from the Twitter API](#print-tweets-obtained-from-the-twitter-api)
+* [Links:](#links)
+
+## Introduction
 This a demo project for showcasing Akka Streams in Scala. The name "Reactive Tweets" comes from the equal named Quickstart Guide.
 It is extended to load with more Sources, Flows and Sinks to get more practical hands-on experience.
 
-To make the exploration more interesting I implemented a Twitter Client to load real Twitter data.
+To make the exploration more interesting I implemented a Twitter Client to load real-time Twitter data.
 
 ## Getting Started
 In order to experiment with Akka Streams on your own you can simply clone this project.
