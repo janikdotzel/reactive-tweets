@@ -5,10 +5,11 @@ import akka.stream.scaladsl.{Flow, Sink, Source}
 import akka.util.ByteString
 import akka.{Done, NotUsed}
 import janikdotzel.reactivetweets.twitter.TwitterAPI._
+
 import scala.concurrent.Future
 import scala.concurrent.duration.DurationInt
 
-trait StreamComponents {
+object StreamComponents {
 
   // Model
   final case class Author(handle: String)
@@ -40,13 +41,13 @@ trait StreamComponents {
       Nil)
 
     val authors: Source[Author, NotUsed] =
-      tweets.map(_.author)
+      tweets.map(_.author).mapAsync(1)(Future.successful)
 
     val getAuthors: Flow[Tweet,Author,NotUsed] =
       Flow[Tweet].filter(_.hashtags.contains(akkaTag)).map(_.author)
 
     val getBody: Flow[Tweet, String, NotUsed] =
-      Flow[Tweet].map( tweet => tweet.body)
+      Flow[Tweet].map(tweet => tweet.body)
 
   val printer: Sink[Any, Future[Done]] = Sink.foreach(println)
   // Tag: print-akka-tweets
@@ -78,8 +79,8 @@ trait StreamComponents {
   val scalaQuery = "scala"
   val query = "akka%20scala%20lightbend"
 
-  val recentTweets: Source[List[String], NotUsed] =
-    Source.repeat(search("malediven"))
+//  val recentTweets: Source[List[String], NotUsed] =
+//    Source.repeat(search(scalaQuery))
 
   val rateLimit: Flow[List[String], List[String], NotUsed] =
     Flow[List[String]].throttle(1, 10.second)

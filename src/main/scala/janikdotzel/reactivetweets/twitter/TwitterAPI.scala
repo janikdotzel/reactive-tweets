@@ -13,8 +13,10 @@ import scala.concurrent.{Await, Future}
 
 object TwitterAPI {
 
-  val bearerToken: String = System.getenv("BEARER_TOKEN")
-  if (bearerToken.isEmpty) println("Bearer Token is missing.") else println("Bearer Token is set correctly.")
+  val bearerToken: String = sys.env.get("BEARER_TOKEN") match {
+    case Some(token) => token
+    case None => throw new NullPointerException("Environment Variable for BEARER_TOKEN is missing.")
+  }
 
   def search(query: String): List[String] = {
     val uri = "https://api.twitter.com/2/tweets/search/recent?query=" + query

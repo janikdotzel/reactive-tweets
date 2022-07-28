@@ -4,10 +4,11 @@ import akka.actor.ActorSystem
 import akka.stream.scaladsl.Sink
 import akka.testkit.TestProbe
 import org.scalatest.flatspec.AnyFlatSpec
+import StreamComponents.{Author,getAuthors}
 
 import scala.concurrent.duration.DurationInt
 
-class ReactiveTweetsUnitSpec extends AnyFlatSpec with StreamComponents {
+class StreamComponentsUnitSpec extends AnyFlatSpec {
 
   "ReactiveTweets" should "print authors of akka tweets" in {
     implicit val system: ActorSystem = ActorSystem("reactive-tweets")
@@ -16,7 +17,7 @@ class ReactiveTweetsUnitSpec extends AnyFlatSpec with StreamComponents {
     import system.dispatcher
 
     val probe = TestProbe()
-    val sourceUnderTest = tweets
+    val sourceUnderTest = StreamComponents.tweets
     val expectedAuthors = Seq(
       Author("rolandkuhn"),
       Author("patriknw"),

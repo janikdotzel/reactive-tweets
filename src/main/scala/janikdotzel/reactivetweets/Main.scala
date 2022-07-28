@@ -5,12 +5,12 @@ import akka.actor.typed.scaladsl.Behaviors
 import akka.http.scaladsl.marshallers.sprayjson.SprayJsonSupport
 import spray.json.DefaultJsonProtocol
 import scala.concurrent.ExecutionContextExecutor
+import StreamComponents._
 
 
 object Main extends App
   with SprayJsonSupport
-  with DefaultJsonProtocol
-  with StreamComponents {
+  with DefaultJsonProtocol {
 
   implicit val system: ActorSystem[Nothing] = ActorSystem(Behaviors.empty, "reactive-tweets")
   implicit val executionContext: ExecutionContextExecutor = system.executionContext
@@ -31,7 +31,7 @@ object Main extends App
   tweetCountScala.via(readJson).to(printer).run()
 
   // Print one akka tweet every second (via the Twitter API)
-  recentTweets.via(rateLimit).to(tweetPrinter).run()
+//  recentTweets.via(rateLimit).to(tweetPrinter).run()
 
 
 
