@@ -20,10 +20,7 @@ object Main extends App
   // Print Tweets with the 'akka' hashtag
   tweetSource.via(filterByAkka).via(getBody).to(printer).run()
 
-  // Print the tweet hourly tweet count of akka
-  tweetCountAkka.via(readTweetCount).to(akkaPrinter).run()
-  // Print the tweet hourly tweet count of scala
-  tweetCountScala.via(readTweetCount).to(scalaPrinter).run()
+
 
 
 
