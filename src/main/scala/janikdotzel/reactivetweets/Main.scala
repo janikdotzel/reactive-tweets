@@ -3,10 +3,12 @@ package janikdotzel.reactivetweets
 import akka.actor.typed.ActorSystem
 import akka.actor.typed.scaladsl.Behaviors
 import akka.http.scaladsl.marshallers.sprayjson.SprayJsonSupport
+import janikdotzel.reactivetweets.streamcomponents.JsonSource._
+import janikdotzel.reactivetweets.streamcomponents.PrintAkkaTweets._
+import janikdotzel.reactivetweets.streamcomponents.PrintRealScalaTweets._
 import spray.json.DefaultJsonProtocol
-import scala.concurrent.ExecutionContextExecutor
-import StreamComponents._
 
+import scala.concurrent.ExecutionContextExecutor
 
 object Main extends App
   with SprayJsonSupport
@@ -15,22 +17,24 @@ object Main extends App
   implicit val system: ActorSystem[Nothing] = ActorSystem(Behaviors.empty, "reactive-tweets")
   implicit val executionContext: ExecutionContextExecutor = system.executionContext
 
+  system.log.info("test")
+
   // Print all tweet
   tweets.to(printer).run()
 
-  // Print all authors who wrote akka tweets
-  tweets.via(getAuthors).to(printer).run()
-
-  // Prints all messages
-  tweets.via(getBody).to(printer).run()
-
-  // Print the tweet hourly tweet count of akka
-  tweetCountAkka.via(readJson).to(printer).run()
-
-  // Print the tweet hourly tweet count of scala
-  tweetCountScala.via(readJson).to(printer).run()
-
-  // Print one akka tweet every second (via the Twitter API)
+//  // Print all authors who wrote akka tweets
+//  tweets.via(getAuthors).to(printer).run()
+//
+//  // Prints all messages
+//  tweets.via(getBody).to(printer).run()
+//
+//  // Print the tweet hourly tweet count of akka
+//  tweetCountAkka.via(readJson).to(printer).run()
+//
+//  // Print the tweet hourly tweet count of scala
+//  tweetCountScala.via(readJson).to(printer).run()
+//
+//  // Print one akka tweet every second (via the Twitter API)
 //  recentTweets.via(rateLimit).to(tweetPrinter).run()
 
 

@@ -1,23 +1,23 @@
 package janikdotzel.reactivetweets
 
 import akka.actor.ActorSystem
+import akka.pattern.pipe
 import akka.stream.scaladsl.Sink
 import akka.testkit.TestProbe
+import janikdotzel.reactivetweets.Main.system.executionContext
+import janikdotzel.reactivetweets.TweetModel.Author
+import janikdotzel.reactivetweets.streamcomponents.PrintRealScalaTweets.{getAuthors, tweets}
 import org.scalatest.flatspec.AnyFlatSpec
-import StreamComponents.{Author,getAuthors}
 
 import scala.concurrent.duration.DurationInt
 
-class StreamComponentsUnitSpec extends AnyFlatSpec {
+class PrintAkkaTweetsUnitSpec extends AnyFlatSpec {
 
   "ReactiveTweets" should "print authors of akka tweets" in {
     implicit val system: ActorSystem = ActorSystem("reactive-tweets")
 
-    import akka.pattern.pipe
-    import system.dispatcher
-
     val probe = TestProbe()
-    val sourceUnderTest = StreamComponents.tweets
+    val sourceUnderTest = tweets
     val expectedAuthors = Seq(
       Author("rolandkuhn"),
       Author("patriknw"),
@@ -26,7 +26,6 @@ class StreamComponentsUnitSpec extends AnyFlatSpec {
       Author("ktosopl"),
       Author("mmartynas"),
       Author("akkateam"))
-
 
     sourceUnderTest.via(getAuthors).runWith(Sink.seq).pipeTo(probe.ref)
     probe.expectMsg(3.seconds, expectedAuthors)
