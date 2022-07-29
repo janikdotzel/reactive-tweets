@@ -24,9 +24,8 @@ object Main extends App
   tweetCountAkka.via(readTweetCount).to(akkaPrinter).run()
   // Print the tweet hourly tweet count of scala
   tweetCountScala.via(readTweetCount).to(scalaPrinter).run()
-  
-  // Print one akka tweet every second (via the Twitter API)
-  recentTweets.via(rateLimit).to(printer).run()
+
+
 
 
 

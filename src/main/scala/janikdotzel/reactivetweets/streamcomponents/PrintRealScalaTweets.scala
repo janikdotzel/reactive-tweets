@@ -13,9 +13,5 @@ object PrintRealScalaTweets {
   val scalaQuery = "scala"
   val query = "akka%20scala%20lightbend"
 
-  val recentTweets: Source[List[String], NotUsed] =
-    Source.repeat(TwitterAPI.search(scalaQuery))
 
-  val rateLimit: Flow[List[String], String, NotUsed] =
-    Flow[List[String]].mapConcat(list => list).throttle(1, 2.second)
 }
