@@ -17,8 +17,7 @@ object Main extends App
   implicit val system: ActorSystem[Nothing] = ActorSystem(Behaviors.empty, "reactive-tweets")
   implicit val executionContext: ExecutionContextExecutor = system.executionContext
 
-  // Print Tweets with the 'akka' hashtag
-  tweetSource.via(filterByAkka).via(getBody).to(printer).run()
+
 
 
 

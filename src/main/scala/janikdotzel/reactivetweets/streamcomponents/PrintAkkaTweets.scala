@@ -8,12 +8,6 @@ import scala.concurrent.Future
 
 object PrintAkkaTweets {
 
-  val tweetSource: Source[Tweet, NotUsed] = Source(tweets)
 
-  val filterByAkka: Flow[Tweet, Tweet, NotUsed] = Flow[Tweet].filter( tweet => tweet.hashtags.contains(akkaTag))
-
-  val getBody: Flow[Tweet, String, NotUsed] = Flow[Tweet].map(tweet => tweet.body)
-
-  val printer: Sink[Any, Future[Done]] = Sink.foreach(println)
 
 }
