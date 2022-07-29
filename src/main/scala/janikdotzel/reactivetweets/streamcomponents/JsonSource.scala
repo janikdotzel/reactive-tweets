@@ -1,6 +1,6 @@
 package janikdotzel.reactivetweets.streamcomponents
 
-import akka.NotUsed
+import akka.{Done, NotUsed}
 import akka.stream.alpakka.json.scaladsl.JsonReader
 import akka.stream.scaladsl.{Flow, Sink, Source}
 import akka.util.ByteString
@@ -19,9 +19,17 @@ object JsonSource {
     Source.single(ByteString(json))
   }
 
-  val readJson: Flow[ByteString, String, NotUsed] =
-    JsonReader.select("$.data[*].tweet_count")
+  val readTweetCount: Flow[ByteString, String, NotUsed] =
+    JsonReader
+      .select("$.data[*].tweet_count")
       .map(byteString => byteString.utf8String)
 
-  val seq: Sink[Nothing, Future[Seq[Nothing]]] = Sink.seq
+  val readStartTime: Flow[ByteString, String, NotUsed] =
+    JsonReader
+      .select("$.data[*].start")
+      .map(byteString => byteString.utf8String)
+
+  val akkaPrinter: Sink[String, Future[Done]] = Sink.foreach(count => println(s"Akka Tweet count: $count"))
+  val scalaPrinter: Sink[String, Future[Done]] = Sink.foreach(count => println(s"Scala Tweet count: $count"))
+
 }

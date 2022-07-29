@@ -1,25 +1,19 @@
 package janikdotzel.reactivetweets.streamcomponents
 
-import akka.{Done, NotUsed}
 import akka.stream.scaladsl.{Flow, Sink, Source}
-import janikdotzel.reactivetweets.twitter.TwitterAPI
+import akka.{Done, NotUsed}
+import janikdotzel.reactivetweets.TweetModel.{Author, Hashtag, Tweet, akkaTag, tweets}
+
 import scala.concurrent.Future
-import scala.concurrent.duration.DurationInt
 
 object PrintAkkaTweets {
 
-  val akkaQuery = "akka"
-  val scalaQuery = "scala"
-  val query = "akka%20scala%20lightbend"
+  val tweetSource: Source[Tweet, NotUsed] = Source(tweets)
 
-  val recentTweets: Source[List[String], NotUsed] =
-    Source.repeat(TwitterAPI.search(scalaQuery))
+  val filterByAkka: Flow[Tweet, Tweet, NotUsed] = Flow[Tweet].filter( tweet => tweet.hashtags.contains(akkaTag))
 
-  val rateLimit: Flow[List[String], List[String], NotUsed] =
-    Flow[List[String]].throttle(1, 10.second)
+  val getBody: Flow[Tweet, String, NotUsed] = Flow[Tweet].map(tweet => tweet.body)
 
-  val tweetPrinter: Sink[List[String], Future[Done]] =
-    Sink.foreach { tweets =>
-      tweets.zipWithIndex.foreach { case (element, index) => println(s"Message $index: $element") }
-    }
+  val printer: Sink[Any, Future[Done]] = Sink.foreach(println)
+
 }
