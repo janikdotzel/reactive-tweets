@@ -43,17 +43,21 @@ To get started with each task, checkout the respective git tag.
 
 ### Print Tweets with the 'akka' hashtag
 ```
-git checkout print-akka-tweets
+git checkout task-1
 ```
 ### Use a Json File as a Source
 ```
-git checkout json-source
+git checkout task-2
 ```
 ### Print tweets obtained from the Twitter API
 ```
-git checkout print-real-scala-tweets
+git checkout task-3
 ```
 
+### Get the full implementation with solutions by checking with
+```
+git checkout solution
+```
 
 
 ## Links:
